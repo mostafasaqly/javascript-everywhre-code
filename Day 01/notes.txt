@@ -1,0 +1,39 @@
+Js Code => Js Engine => Machine Instructions => CPU
+
+const x = 10;
+const y = 20;
+console.log(x+y);
+
+Browser => chrome [V8 engine]
+
+JS with Browser [window - document - localstroage - location - navigator]
+JS with Node.js [process - fs- path - http]
+
+Runtime Envroirment
+
+JS [variables - function -....]
+const x = 10;
+console.log(x);
+
+JS = programming languaue
+Node Js = Runtime
+npm = node package manager
+
+
+node start.js
+npm install ..
+
+
+
+VS Code != programming languaue
+VS Code != Compiler
+VS Code != Javascript
+
+Vs Code = Code Editor
+
+
+Git [v1 - v2 - v3 - ....]
+Commit login - commit dashabord - commit payment
+
+My Computer => Git "software" [local repository] => git push => 
+github "online service"
