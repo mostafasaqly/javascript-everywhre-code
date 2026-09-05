@@ -37,3 +37,6 @@ Commit login - commit dashabord - commit payment
 
 My Computer => Git "software" [local repository] => git push => 
 github "online service"
+
+
+JS => HTML & CSS [click - input - submit - chnage - keydown - mouseover]
