@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "target": "es2020",
+        "module": "CommonJs",
+        "lib": ["ES2020", "DOM"],
+        "strict": true
+    }
+}
