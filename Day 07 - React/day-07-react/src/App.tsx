@@ -1,9 +1,10 @@
-import { Tasks } from "./tasks";
+import { AddTask } from "./AddTask";
+
 
 export default function App() {
   return (
     <>
-      <Tasks />
+      <AddTask onAdd={(title) => console.log("Task added:", title)} />
     </>
   );
 }
