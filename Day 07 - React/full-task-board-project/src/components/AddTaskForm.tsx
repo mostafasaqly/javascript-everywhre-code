@@ -28,8 +28,9 @@ export function AddTaskForm({ onAdd }: AddTaskFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="add-form" onSubmit={handleSubmit}>
       <input
+        className="input"
         type="text"
         value={title}
         onChange={(event) => setTitle(event.target.value)}
@@ -37,6 +38,7 @@ export function AddTaskForm({ onAdd }: AddTaskFormProps) {
       />
 
       <select
+        className="select"
         value={priority}
         onChange={(event) => setPriority(event.target.value as Priority)}
       >
@@ -47,7 +49,7 @@ export function AddTaskForm({ onAdd }: AddTaskFormProps) {
         <option value="high">High</option>
       </select>
 
-      <button type="submit">Add</button>
+      <button className="btn" type="submit">Add</button>
     </form>
   );
 }

@@ -6,7 +6,7 @@ export function Header({
   remaining,
 }: HeaderProps) {
   return (
-    <header>
+    <header className="header">
       <h1>
         Task Board
       </h1>

@@ -19,8 +19,8 @@ export function FilterBar({
   onSearchChange,
 }: FilterBarProps) {
   return (
-    <section>
-      <div>
+    <section className="filter-bar">
+      <div className="filters">
         {FILTERS.map((currentFilter) => (
           <button
             key={currentFilter}
@@ -33,6 +33,7 @@ export function FilterBar({
       </div>
 
       <input
+        className="input"
         type="search"
         value={search}
         onChange={(event) => onSearchChange(event.target.value)}

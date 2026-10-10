@@ -22,15 +22,15 @@ export function TaskList({
   onPriorityChange,
 }: TaskListProps) {
   if (!hasTasks) {
-    return <p>No tasks yet. Add your first task.</p>;
+    return <p className="empty">No tasks yet. Add your first task.</p>;
   }
 
   if (tasks.length === 0) {
-    return <p>No matching tasks.</p>;
+    return <p className="empty">No matching tasks.</p>;
   }
 
   return (
-    <ul>
+    <ul className="task-list">
       {tasks.map((task) => (
         <TaskItem
           key={task.id}

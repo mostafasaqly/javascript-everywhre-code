@@ -87,7 +87,7 @@ export default function App() {
   const remaining = tasks.length - completed;
 
   return (
-    <main>
+    <main className="board">
       <Header remaining={remaining} />
 
       <AddTaskForm onAdd={addTask} />

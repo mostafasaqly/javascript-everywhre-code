@@ -8,13 +8,13 @@ interface FooterProps {
 
 export function Footer({ total, completed, onClearCompleted }: FooterProps) {
   return (
-    <footer>
+    <footer className="footer">
       <p>
         {completed} of {total} completed
       </p>
 
       {completed > 0 && (
-        <button onClick={onClearCompleted}>Clear Completed</button>
+        <button className="link-btn" onClick={onClearCompleted}>Clear Completed</button>
       )}
     </footer>
   );
