@@ -173,3 +173,54 @@
   max-width: 720px;
   margin-top: 12px;
 }
+/* ===== Selected task ===== */
+.task-selected {
+  margin: 0;
+  font-size: 14px;
+  color: #4b5563;
+}
+/* ===== Selected card & empty state ===== */
+.task-card-selected {
+  box-shadow: 0 0 0 2px #1e3a8a;
+}
+
+.empty-state {
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  color: #6b7280;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+}
+/* ===== Toolbar ===== */
+.task-toolbar {
+  display: flex;
+  gap: 8px;
+}
+/* ===== Done tasks & actions ===== */
+.task-title-done {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.task-footer {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.task-actions {
+  display: flex;
+  gap: 6px;
+}
+.task-button-danger {
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.task-button-danger:hover {
+  background-color: #fef2f2;
+}
+.task-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
