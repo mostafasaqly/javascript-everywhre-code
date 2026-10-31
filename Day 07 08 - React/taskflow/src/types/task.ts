@@ -7,3 +7,10 @@ export interface Task {
   status: TaskStatus
   dueDate? :string
 }
+export interface TaskFormValues
+{
+  title: string
+  description: string
+  status: TaskStatus
+  dueDate: string
+}

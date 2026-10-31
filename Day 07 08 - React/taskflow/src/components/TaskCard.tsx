@@ -6,6 +6,7 @@ interface TaskCardProps {
   onSelect: (id:number)=>void
   onToggle: (id:number)=>void
   onDelete: (id:number)=>void
+  onEdit: (id:number) => void
 }
 
 function getStatusLabel(status: string): string {
@@ -13,7 +14,8 @@ function getStatusLabel(status: string): string {
   if (status === "in-progress") return "In Progress";
   return "Done";
 }
-function TaskCard({ task, variant= 'default',isSelected=false, onSelect, onToggle, onDelete }: TaskCardProps) {
+function TaskCard({ task, variant= 'default',isSelected=false, 
+  onSelect, onToggle, onDelete, onEdit }: TaskCardProps) {
   const isDone = task.status === "done";
   const cardClass = 'task-card task-card-' + variant + (isSelected? 'task-card-selected': '')
   return (
@@ -29,6 +31,7 @@ function TaskCard({ task, variant= 'default',isSelected=false, onSelect, onToggl
           {isDone? 'Undo': 'Mark Done'}
         </button>
         <button type="button" className="task-button" onClick={ ()=>onSelect(task.id)}>Details</button>
+        <button type="button" className="task-button" onClick={ ()=>onEdit(task.id)}>Edit</button>
         <button type="button" className="task-button task-button-danger" onClick={ ()=>onDelete(task.id)}>Delete</button>
       </div>
     </article>
