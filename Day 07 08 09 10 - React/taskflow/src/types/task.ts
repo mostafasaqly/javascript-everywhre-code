@@ -6,6 +6,7 @@ export interface Task {
   description: string
   status: TaskStatus
   dueDate? :string
+  projectId: string
 }
 export interface TaskFormValues
 {

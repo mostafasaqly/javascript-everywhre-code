@@ -1,6 +1,6 @@
 import type { Task, TaskFormValues } from "../types/task";
 // data transformation function to convert form values to a Task object
-export function fromFormValues(values: TaskFormValues): Omit<Task,'id'> {
+export function fromFormValues(values: TaskFormValues): Omit<Task,'id' | 'projectId'> {
   return {
     title: values.title,
     description: values.description,

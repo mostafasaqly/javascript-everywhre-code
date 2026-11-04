@@ -1,4 +1,6 @@
+import { memo } from "react";
 import type { Task } from "../types/task";
+import Button from "./ui/Button";
 interface TaskCardProps {
   task : Task
   variant? : 'default' | 'urgent'
@@ -27,14 +29,15 @@ function TaskCard({ task, variant= 'default',isSelected=false,
       <p className = "task-date">{task.dueDate ?? 'No Due Date'}</p>
       <span className={`task-status status-${task.status}`}>{getStatusLabel(task.status)}</span>
       <div className="task-actions">
-        <button type="button" className="task-button" onClick={ ()=>onToggle(task.id)}>
+        <Button onClick={ ()=>onToggle(task.id)}>
           {isDone? 'Undo': 'Mark Done'}
-        </button>
-        <button type="button" className="task-button" onClick={ ()=>onSelect(task.id)}>Details</button>
-        <button type="button" className="task-button" onClick={ ()=>onEdit(task.id)}>Edit</button>
-        <button type="button" className="task-button task-button-danger" onClick={ ()=>onDelete(task.id)}>Delete</button>
+        </Button>
+        <Button onClick={ ()=>onSelect(task.id)}>Details</Button>
+        <Button  onClick={ ()=>onEdit(task.id)}>Edit</Button>
+        <Button variant="danger"
+          onClick={ ()=>onDelete(task.id)}>Delete</Button>
       </div>
     </article>
   );
 }
-export default TaskCard;
+export default memo(TaskCard);

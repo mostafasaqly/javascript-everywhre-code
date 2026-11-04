@@ -1,15 +1,29 @@
-import { useState } from "react";
-import { tasks as intialtasks } from "../data/tasks";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Section from "./Section";
 import TaskCard from "./TaskCard";
-import type { Task, TaskFormValues } from "../types/task";
+import type { TaskFormValues } from "../types/task";
 import TaskForm from "./TaskForm";
-import { fromFormValues, toFromValues } from "../utils/taskForm";
+import {  toFromValues } from "../utils/taskForm";
 import TaskFilters from "./TaskFilters";
 import { type StatusFilter } from "./TaskFilters";
-function TaskList() {
+import {  writeJson } from "../utils/storage";
+import { type TaskApi } from "../hooks/useTasks";
+import {DEFAULT_PROJECT_ID} from "../data/projects";
+import { useOutletContext } from "react-router";
+import EmptyState from "./ui/EmptyState";
+import Button from "./ui/Button";
+interface TaskListProps {
+  title: string;
+  projectId: string;
+}
+function TaskList({ title, projectId }: TaskListProps) {
+  const {tasks : allTasks, addTask, updateTask, toggleTask, deleteTask, clearDone} = 
+  useOutletContext<TaskApi>();
+
+  const tasks = useMemo( ()=> (projectId ? allTasks.filter((task) => task.projectId === projectId) : allTasks), 
+  [allTasks, projectId]);
+
   // let selectedId: number | null = null;
-  const [tasks, setTasks] = useState<Task[]>(intialtasks);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -22,73 +36,61 @@ function TaskList() {
 
   // logic for filter and search
   const normalizedQuery = query.trim().toLowerCase();
-  const visibleTasks = tasks.filter((task) => {
-    const matchQuery =
-      task.title.toLowerCase().includes(normalizedQuery) ||
-      task.description.toLowerCase().includes(normalizedQuery);
-    const matchStatus = statusFilter === "all" || task.status === statusFilter;
-    return matchQuery && matchStatus;
-  });
-  const emptyMessage =
-    tasks.length === 0
-      ? "No Tasks yet, add new task"
-      : "No tasks match your filters";
+    const visibleTasks = useMemo(() => {
+      return tasks.filter((task) => {
+        const matchQuery =
+          task.title.toLowerCase().includes(normalizedQuery) ||
+          task.description.toLowerCase().includes(normalizedQuery);
+        const matchStatus = statusFilter === "all" || task.status === statusFilter;
+        return matchQuery && matchStatus;})
+    },[tasks, query, statusFilter]);
+  
 
-  function handleSelectTask(id: number) {
-    setSelectedId(id);
-  }
-  function handleAdd(values: TaskFormValues) {
-    const nextId =
-      tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
-    const newTask: Task = {
-      id: nextId,
-      ...fromFormValues(values),
+  useEffect(() => {
+    writeJson("taskflow.tasks", tasks);
+  }, [tasks]);
+  useEffect(() => {
+    document.title = openCount > 0 ? `(${openCount}) My Tasks` : "My Tasks";
+  }, [openCount]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        console.log("Escape key pressed");
+        alert("Escape key pressed");
+        setEditingId(null);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
     };
-    setTasks([...tasks, newTask]);
-  }
-  function handleToggleTask(id: number) {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === id) {
-          const newStatus = task.status === "done" ? "todo" : "done";
-          return { ...task, status: newStatus };
-        }
-        return task;
-      }),
-    );
-  }
+  }, []);
+
+  
+  
   function handleUpdate(id: number, values: TaskFormValues) {
-    setTasks(
-      tasks.map(
-        (task): Task =>
-          task.id === id ? 
-        { ...task, ...fromFormValues(values) } : task),
-      
-    )
+    updateTask(id, values);
     setEditingId(null);
   }
-  function handleDeleteTask(id: number) {
-    setTasks(tasks.filter((task) => task.id !== id));
-    if (selectedId === id) {
-      setSelectedId(null);
-    }
-  }
-  function handleClearDone() {
-    setTasks(tasks.filter((task) => task.status !== "done"));
-  }
+  const handleDeleteTask = useCallback((id: number) => {
+    deleteTask(id);
+    setSelectedId((current) => (current === id ? null : current));
+  }, [deleteTask]);
+  
 
   return (
-    <Section title={`My Tasks (${openCount} open, ${doneCount} done)`}>
-      <TaskForm submitLabel="Add Task" onSubmit={handleAdd}/>
+    <Section title={title + '(' + openCount + ')'}>
+      <TaskForm submitLabel="Add Task" onSubmit={(values) => addTask(values, projectId ?? DEFAULT_PROJECT_ID)} />
+
       <div className="task-toolbar">
-        <button
-          type="button"
-          className="task-button task-button-danger"
-          onClick={handleClearDone}
+        <Button
+          onClick={clearDone}
           disabled={doneCount === 0}
         >
           Clear Done ({doneCount})
-        </button>
+        </Button>
       </div>
       <TaskFilters
         query={query}
@@ -101,31 +103,32 @@ function TaskList() {
         Selected : {selectedTask?.title ?? "None"}
       </p>
       {visibleTasks.length === 0 ? (
-        <p className="empty-state">{emptyMessage}</p>
+        <EmptyState title="No Tasks Found" />
       ) : (
-        visibleTasks.map((task) => task.id === editingId?
-        <TaskForm
-        key={task.id}
-        initialValues={toFromValues(task)}
-        submitLabel="Save"
-        onSubmit={(values)=> handleUpdate(task.id, values)}
-        onCancel={()=> setEditingId(null)}
-
-        />
-        :(
-          <TaskCard
-            key={task.id}
-            task={task}
-            variant={
-              task.dueDate && task.status !== "done" ? "urgent" : "default"
-            }
-            isSelected={task.id === selectedId}
-            onSelect={handleSelectTask}
-            onToggle={handleToggleTask}
-            onDelete={handleDeleteTask}
-            onEdit={setEditingId}
-          />
-        ))
+        visibleTasks.map((task) =>
+          task.id === editingId ? (
+            <TaskForm
+              key={task.id}
+              initialValues={toFromValues(task)}
+              submitLabel="Save"
+              onSubmit={(values) => handleUpdate(task.id, values)}
+              onCancel={() => setEditingId(null)}
+            />
+          ) : (
+            <TaskCard
+              key={task.id}
+              task={task}
+              variant={
+                task.dueDate && task.status !== "done" ? "urgent" : "default"
+              }
+              isSelected={task.id === selectedId}
+              onSelect={setSelectedId}
+              onToggle={toggleTask}
+              onDelete={handleDeleteTask}
+              onEdit={setEditingId}
+            />
+          ),
+        )
       )}
     </Section>
   );

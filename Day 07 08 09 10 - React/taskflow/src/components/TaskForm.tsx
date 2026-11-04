@@ -1,6 +1,7 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import type { SubmitEvent } from "react";
 import type { TaskFormValues } from "../types/task";
+import Button from "./ui/Button";
 interface TaskFormProps {
   initialValues?: TaskFormValues;
   submitLabel: string;
@@ -22,6 +23,9 @@ function TaskForm({
 }: TaskFormProps) {
   const [values, setValues] = useState<TaskFormValues>(emptyValues);
   const [error, setError] = useState("");
+
+  const titleRef = useRef<HTMLInputElement>(null);
+  useEffect(() => titleRef.current?.focus(), []);
   function handleChange(event: ChangeEvent<FieldElement>) {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
@@ -35,6 +39,7 @@ function TaskForm({
     setError("");
     onSubmit(values);
     setValues(initialValues);
+    titleRef.current?.focus();
   }
   return (
     <form className="task-form" onSubmit={handleSubmit}>
@@ -42,6 +47,7 @@ function TaskForm({
         <span>Title</span>
         <input
           type="text"
+          ref={titleRef}
           placeholder="Task Title"
           name="title"
           value={values.title}
@@ -83,13 +89,10 @@ function TaskForm({
             {error}
           </p>
         )}
-        <button type="submit" className="task-button task-button-primary">
+        <Button type="submit" variant="primary">
           {submitLabel}
-        </button>
-        {onCancel && (
-          <button type='button' className="task-button"
-          onClick={onCancel}>Cancel</button>
-        )}
+        </Button>
+        {onCancel && <Button onClick={onCancel}>Cancel</Button> }
       </div>
     </form>
   );

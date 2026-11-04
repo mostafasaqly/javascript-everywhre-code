@@ -1,21 +1,19 @@
+import { Route, Routes } from 'react-router'
 import './App.css'
-import Header from './components/Header'
-import Sidebar from './components/Sidebar'
-import TaskList from './components/TaskList'
+import AppLayout from './layouts/AppLayout'
+import TasksPage from './pages/TasksPage'
+import NotFoundPage from './pages/NotFoundPage'
+import ProjectPage from './pages/ProjectPage'
 function App() {
 
   return (
-    <div className="app">
-      <Header userName="Mostafa" />
-
-      <div className="app-body">
-        <Sidebar />
-
-        <main className="main-content">
-          <TaskList />
-        </main>
-      </div>
-    </div>
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route index element={<TasksPage />} />
+        <Route path="projects/:projectId" element={<ProjectPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   )
 }
 
