@@ -10,6 +10,9 @@ function Sidebar() {
         <h2 className="sidebar-title">Projects</h2>
         <ul className="project-list">
           <li>
+            <NavLink to="/dashboard" className={linkClass}>Dashboard</NavLink>
+          </li>
+          <li>
             <NavLink to="/" end className={linkClass}>All Tasks</NavLink>
           </li>
           {projects.map((project) => (

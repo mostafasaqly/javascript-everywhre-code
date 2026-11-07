@@ -1,0 +1,27 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Design the login page",
+      "description": "Create a simple and clean login screen.",
+      "status": "todo",
+      "dueDate": "2026-11-05",
+      "projectId": "website"
+    },
+    {
+      "id": 2,
+      "title": "Set up the project",
+      "description": "Create the React + TypeScript project with Vite.",
+      "status": "done",
+      "projectId": "website"
+    },
+    {
+      "id": 3,
+      "title": "Build the task list",
+      "description": "Show all tasks for the current project.",
+      "status": "in-progress",
+      "dueDate": "2026-11-12",
+      "projectId": "mobile"
+    }
+  ]
+}

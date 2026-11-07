@@ -3,25 +3,39 @@ import Section from "./Section";
 import TaskCard from "./TaskCard";
 import type { TaskFormValues } from "../types/task";
 import TaskForm from "./TaskForm";
-import {  toFromValues } from "../utils/taskForm";
+import { toFromValues } from "../utils/taskForm";
 import TaskFilters from "./TaskFilters";
 import { type StatusFilter } from "./TaskFilters";
-import {  writeJson } from "../utils/storage";
-import { type TaskApi } from "../hooks/useTasks";
-import {DEFAULT_PROJECT_ID} from "../data/projects";
-import { useOutletContext } from "react-router";
+import { writeJson } from "../utils/storage";
+import { DEFAULT_PROJECT_ID } from "../data/projects";
 import EmptyState from "./ui/EmptyState";
 import Button from "./ui/Button";
+import { useTasksContext } from "../state/tasksContext";
+import LoadingState from "./LoadingState";
 interface TaskListProps {
   title: string;
   projectId: string;
 }
 function TaskList({ title, projectId }: TaskListProps) {
-  const {tasks : allTasks, addTask, updateTask, toggleTask, deleteTask, clearDone} = 
-  useOutletContext<TaskApi>();
+  const {
+    tasks: allTasks,
+    status,
+    error,
+    reload,
+    addTask,
+    updateTask,
+    toggleTask,
+    deleteTask,
+    ClearDone,
+  } = useTasksContext();
 
-  const tasks = useMemo( ()=> (projectId ? allTasks.filter((task) => task.projectId === projectId) : allTasks), 
-  [allTasks, projectId]);
+  const tasks = useMemo(
+    () =>
+      projectId
+        ? allTasks.filter((task) => task.projectId === projectId)
+        : allTasks,
+    [allTasks, projectId],
+  );
 
   // let selectedId: number | null = null;
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -36,15 +50,16 @@ function TaskList({ title, projectId }: TaskListProps) {
 
   // logic for filter and search
   const normalizedQuery = query.trim().toLowerCase();
-    const visibleTasks = useMemo(() => {
-      return tasks.filter((task) => {
-        const matchQuery =
-          task.title.toLowerCase().includes(normalizedQuery) ||
-          task.description.toLowerCase().includes(normalizedQuery);
-        const matchStatus = statusFilter === "all" || task.status === statusFilter;
-        return matchQuery && matchStatus;})
-    },[tasks, query, statusFilter]);
-  
+  const visibleTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      const matchQuery =
+        task.title.toLowerCase().includes(normalizedQuery) ||
+        task.description.toLowerCase().includes(normalizedQuery);
+      const matchStatus =
+        statusFilter === "all" || task.status === statusFilter;
+      return matchQuery && matchStatus;
+    });
+  }, [tasks, query, statusFilter]);
 
   useEffect(() => {
     writeJson("taskflow.tasks", tasks);
@@ -68,27 +83,40 @@ function TaskList({ title, projectId }: TaskListProps) {
     };
   }, []);
 
-  
-  
   function handleUpdate(id: number, values: TaskFormValues) {
-    updateTask(id, values);
+    void updateTask(id, values);
     setEditingId(null);
   }
-  const handleDeleteTask = useCallback((id: number) => {
-    deleteTask(id);
-    setSelectedId((current) => (current === id ? null : current));
-  }, [deleteTask]);
-  
+  const handleDeleteTask = useCallback(
+    (id: number) => {
+      deleteTask(id);
+      setSelectedId((current) => (current === id ? null : current));
+    },
+    [deleteTask],
+  );
+
+  if (status === "loading") {
+    return <LoadingState />;
+  }
+  if (status === "error") {
+    return (
+      <EmptyState
+        title="Error loading tasks"
+        message={error ?? "Unknown error"}
+        action={<Button onClick={reload}>Try Again</Button>}
+      />
+    );
+  }
 
   return (
-    <Section title={title + '(' + openCount + ')'}>
-      <TaskForm submitLabel="Add Task" onSubmit={(values) => addTask(values, projectId ?? DEFAULT_PROJECT_ID)} />
+    <Section title={title + "(" + openCount + ")"}>
+      <TaskForm
+        submitLabel="Add Task"
+        onSubmit={(values) => addTask(values, projectId ?? DEFAULT_PROJECT_ID)}
+      />
 
       <div className="task-toolbar">
-        <Button
-          onClick={clearDone}
-          disabled={doneCount === 0}
-        >
+        <Button onClick={ClearDone} disabled={doneCount === 0}>
           Clear Done ({doneCount})
         </Button>
       </div>
@@ -98,6 +126,11 @@ function TaskList({ title, projectId }: TaskListProps) {
         onQueryChange={setQuery}
         onStatusChange={setStatusFilter}
       />
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
 
       <p className="task-selected">
         Selected : {selectedTask?.title ?? "None"}

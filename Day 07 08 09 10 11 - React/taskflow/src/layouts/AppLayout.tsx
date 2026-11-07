@@ -1,20 +1,20 @@
 import { Outlet} from "react-router";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
-import { useTasks } from "../hooks/useTasks";
+import { useAuth } from "../state/authContext";
 
 function AppLayout()
 {
-    const taskApi = useTasks();
+  const {user, logout}= useAuth();
     return (
         <div className="app">
-      <Header userName="Mostafa" />
+      <Header userName={user?.name ?? 'there'} onLogout={logout}  />
 
       <div className="app-body">
         <Sidebar />
 
         <main className="main-content">
-          <Outlet context={taskApi} />
+          <Outlet />
         </main>
       </div>
     </div>
