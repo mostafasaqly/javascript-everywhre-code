@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "title": "Design the login page",
+    "description": "Sketch the form and the error states",
+    "status": "in-progress",
+    "dueDate": "2026-11-06",
+    "projectId": 1
+  },
+  {
+    "id": 2,
+    "title": "Build the task list",
+    "description": "Show every task as a card",
+    "status": "todo",
+    "dueDate": "2026-11-10",
+    "projectId": 1
+  },
+  {
+    "id": 3,
+    "title": "Write the docs",
+    "description": "Explain how to run TaskFlow",
+    "status": "done",
+    "projectId": 1
+  },
+  {
+    "id": 4,
+    "title": "Plan the sprint",
+    "description": "Pick the tasks for next week",
+    "status": "todo",
+    "projectId": 2
+  },
+  {
+    "id": 5,
+    "title": "Build the login screen",
+    "description": "Use the new API",
+    "status": "in-progress",
+    "projectId": 2
+  },
+  {
+    "id": 6,
+    "title": "Write the launch post",
+    "description": "Announce TaskFlow",
+    "status": "todo",
+    "projectId": 3
+  }
+]
