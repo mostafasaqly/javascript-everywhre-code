@@ -1,9 +1,9 @@
 import { mkdir ,readFile, writeFile } from "node:fs/promises";
 import path from 'node:path'
-import { fileURLToPath } from "node:url";
+import { config} from './config.js'
+import { taskEvents } from "./events.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url))
-const dataFile = path.join(here, '..', 'data', 'tasks.json')
+const dataFile = path.resolve(config.dataFile)
 
 export async function readTasks()
 {
@@ -29,6 +29,9 @@ export async function addTask({ title, description = '', status = 'todo', projec
   const task = { id, title, description, status, projectId }
   tasks.push(task)
   await writeTasks(tasks)
+
+  taskEvents.emit('task:created',task)
+
   return task
 }
  
@@ -46,5 +49,6 @@ export async function removeTask(id) {
   const next = tasks.filter((task) => task.id !== id)
   if (next.length === tasks.length) return false
   await writeTasks(next)
+  taskEvents.emit('task:removed',id)
   return true
 }

@@ -1,5 +1,7 @@
 import { formatTask } from './format.js'
 import { addTask, readTasks, removeTask, updateTask } from './store.js'
+import './listerners.js'
+import { exportCsv } from './export.js'
 const [command, ...args] = process.argv.slice(2)
 
 function fail(message) {
@@ -31,6 +33,12 @@ switch (command) {
         console.log(`Removed task ${id}`)
         break
     }
+    case 'export': {
+        const file = args[0] ?? tasks.exportCsv
+        await exportCsv(file)
+        console.log(`Exported to ${file}`)
+        break
+    }
     default:
-        console.log('Usage: node src/cli.js <list|add|done|remove>')
+        console.log('Usage: node src/cli.js <list|add|done|remove|export>')
 }
