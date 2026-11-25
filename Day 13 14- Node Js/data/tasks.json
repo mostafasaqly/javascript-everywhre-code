@@ -1,5 +1,13 @@
 [
   {
+    "id": 1,
+    "title": "Design the login page",
+    "description": "Sketch the form and the error states",
+    "status": "in-progress",
+    "dueDate": "2026-11-06",
+    "projectId": 1
+  },
+  {
     "id": 2,
     "title": "Build the task list",
     "description": "Show every task as a card",
@@ -52,20 +60,6 @@
   {
     "id": 9,
     "title": "From curl2l",
-    "description": "",
-    "status": "todo",
-    "projectId": 1
-  },
-  {
-    "id": 10,
-    "title": "Learn Express",
-    "description": "",
-    "status": "todo",
-    "projectId": 1
-  },
-  {
-    "id": 11,
-    "title": "Learn Express",
     "description": "",
     "status": "todo",
     "projectId": 1

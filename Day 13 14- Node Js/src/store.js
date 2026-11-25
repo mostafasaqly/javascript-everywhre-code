@@ -23,12 +23,6 @@ export async function writeTasks(tasks)
     await writeFile(dataFile, JSON.stringify(tasks,null,2)+ '\n')
 }
 
-//Projects
-export async function readProjects() {
-  const file = path.join(path.dirname(dataFile), 'projects.json')
-  return JSON.parse(await readFile(file, 'utf8'))
-}
-//
 export async function addTask({ title, description = '', status = 'todo', projectId = 1 }) {
   const tasks = await readTasks()
   const id = Math.max(0, ...tasks.map((task) => task.id)) + 1
